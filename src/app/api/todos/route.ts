@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import * as yup from "yup";
 
 // export async function GET(request: Request) {
 //   const todos = await prisma.todo.findMany();
@@ -29,4 +30,22 @@ export async function GET(request: Request) {
   const todos = await prisma.todo.findMany({ take, skip });
 
   return NextResponse.json(todos);
+}
+
+const postSchema = yup.object({
+  description: yup.string().required(),
+  complete: yup.boolean().optional().default(false), //! Todo mostrar algo interesante
+});
+
+export async function POST(req: Request) {
+  try {
+    const { complete, description } = await postSchema.validate(
+      await req.json()
+    );
+    const todo = await prisma.todo.create({ data: { complete, description } });
+
+    return NextResponse.json(todo);
+  } catch (error) {
+    return NextResponse.json(error, { status: 400 });
+  }
 }
