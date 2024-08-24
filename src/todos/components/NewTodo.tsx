@@ -14,10 +14,13 @@ export const NewTodo = () => {
     e.preventDefault();
     if( description.trim().length === 0) return;
 
-    const newTodo = await todosApi.createTodo(description);
+    todosApi.createTodo(description);
 
     router.refresh();
-    console.log('form submited', newTodo);
+  }
+  const deleteCompleted = async () => {
+    await todosApi.deleteTodos();
+    router.refresh();
   }
 
   return (
@@ -35,10 +38,10 @@ export const NewTodo = () => {
       <span className='flex flex-1'></span>
 
       <button 
-        //TODO: onClick={ () => deleteCompleted() }
+        onClick={ () => deleteCompleted() }
         type='button' className="flex items-center justify-center rounded ml-2 bg-red-400 p-2 text-white hover:bg-red-700 transition-all">
         <IoTrashOutline />
-        Delete
+        Borrar completados
       </button>
 
 
